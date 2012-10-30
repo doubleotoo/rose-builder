@@ -24,7 +24,7 @@ compile_cherokee()
   # Download and Unpack
   #-----------------------------------------------------------------------------
   download "$CHEROKEE_URL"
-  tar   xvzf cherokee-${VERSION}.tar.gz
+  tar   xvzf cherokee-${VERSION}.tar.gz || exit 1
   cd    cherokee-${VERSION}
 
   #-----------------------------------------------------------------------------

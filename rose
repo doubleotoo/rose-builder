@@ -145,7 +145,7 @@ compile()
     if "$VERBOSE"; then
       (
 
-        compile_${application} "$translator" $*
+        compile_${application} "$translator" $* || exit 1
 
       ) 2>&1 | while read; do log "[compile:${application}] ${REPLY}"; done
       [ ${PIPESTATUS[0]} -ne 0 ] && fail "Failed during Compilation of ${application}" || true

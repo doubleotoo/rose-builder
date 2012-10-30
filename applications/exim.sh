@@ -24,7 +24,7 @@ compile_exim()
   # Download and Unpack
   #-----------------------------------------------------------------------------
   download "$DOWNLOAD_URL"
-  tar xzvf "${TARBALL}"
+  tar xzvf "${TARBALL}" || exit 1
   cd  "exim-${VERSION}"
 
   #-----------------------------------------------------------------------------

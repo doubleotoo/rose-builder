@@ -29,17 +29,17 @@ compile_tcpdump()
   #-----------------------------------------------------------------------------
   # libpcap
   download "$LIBPCAP_DOWNLOAD_URL"
-  tar xvf "${LIBPCAP_TARBALL}"
+  tar xvf "${LIBPCAP_TARBALL}" || exit 1
   pushd "libpcap-${LIBPCAP_VERSION}"
-      ./configure --prefix="$(pwd)/install_tree"
-      make -j${parallelism} install
+      ./configure --prefix="$(pwd)/install_tree" || exit 1
+      make -j${parallelism} install || exit 1
   popd
 
   #-----------------------------------------------------------------------------
   # Download and Unpack
   #-----------------------------------------------------------------------------
   download "$DOWNLOAD_URL"
-  tar xvf "${TARBALL}"
+  tar xvf "${TARBALL}" || exit 1
   cd tcpdump-${VERSION}
 
   #-----------------------------------------------------------------------------

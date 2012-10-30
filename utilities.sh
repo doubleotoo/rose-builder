@@ -64,7 +64,7 @@ download()
         log "[SKIP] File already exists: '${filename}'"
     else
         log "Downloading '${filename}'"
-        wget --no-check-certificate  "$url"
+        wget --no-check-certificate  "$url" || exit 1
     fi
 
 ) 2>&1 | while read; do log "[download] ${REPLY}"; done

@@ -24,7 +24,7 @@ compile_nginx()
   # Download and Unpack
   #-----------------------------------------------------------------------------
   download "$DOWNLOAD_URL"
-  tar xvf "${TARBALL}"
+  tar xvf "${TARBALL}" || exit 1
   cd nginx-${VERSION}
 
   #-----------------------------------------------------------------------------
