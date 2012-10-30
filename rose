@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# TODO: add --force to override existant workspace
+
 source "$(dirname "$0")/utilities.sh"
 
 
@@ -7,10 +9,16 @@ source "$(dirname "$0")/utilities.sh"
 # Source application build functions
 #-------------------------------------------------------------------------------
 export APPSDIR="$(dirname "$0")/applications"
-source "${APPSDIR}/exim"
+
+for app in $(ls "$APPSDIR"); do
+  source "${APPSDIR}/${app}"
+done
 
 
 : ${translator:=identityTranslator}
+: ${parallelism:=1}
+: ${VERBOSE:=false}
+
 
 #-------------------------------------------------------------------------------
 # CLI
@@ -19,20 +27,19 @@ usage()
 {
   printf "%b" "
 Usage
-
   $0 [options] [action]
 
 
 Actions
-
-  compile                 Build an application with your ROSE translator:
-  help                    Display CLI help (this output)
+  compile <application>   Build an application with your ROSE translator:
 
 $(ls ${APPSDIR} | sed 's/\.sh//g' | while read; do echo "\
                           $REPLY"; done)
 
-Options
+  help                    Display CLI help (this output)
 
+Options
+  --parallelism #         make -j#; default: '${parallelism}'
   --translator <path>     Name of your ROSE translator; default: '${translator}'
                           (Note: Your build environment must be pre-configured,
                           i.e. \$PATH and \$LD_LIBRARY_PATH)
@@ -41,6 +48,7 @@ Options
 
   Debugging:
   --trace                 Enables debugging for the script
+  --verbose               Enables debugging tracing
 
 "
 }
@@ -61,11 +69,16 @@ do
         set -o xtrace
         ;;
 
+    --verbose)
+        export VERBOSE=true
+        ;;
+
     --translator)
         if test -n "${1:-}"; then
             export translator="$1"
             shift
         else
+            usage
             fail "--translator must be followed by the name of your ROSE translator."
         fi
         ;;
@@ -75,6 +88,7 @@ do
             export rose_workspace="$1"
             shift
         else
+            usage
             fail "--workspace must be followed by a pathname."
         fi
         ;;
@@ -95,6 +109,7 @@ do
               export rose_command_args="$1"
               shift
           else
+              usage
               fail "compile command must be followed by an application name."
           fi
           ;;
@@ -112,46 +127,10 @@ fi
 
 
 #-------------------------------------------------------------------------------
-# BEGIN - compile_cherokee
-#-------------------------------------------------------------------------------
-compile_cherokee()
-{(
-
-  #-----------------------------------------------------------------------------
-  # Configure  Meta Information
-  #-----------------------------------------------------------------------------
-  declare -r VERSION=1.2.101
-  declare -r TARBALL="cherokee-${VERSION}.tar.gz"
-  declare -r CHEROKEE_URL="http://www.cherokee-project.com/download/1.2/${VERSION}/${TARBALL}"
-
-  #-----------------------------------------------------------------------------
-  # Create Workspace
-  #-----------------------------------------------------------------------------
-  create_workspace "cherokee"
-  cd "cherokee"
-
-  test -e "${TARBALL}" || wget --no-check-certificate  "$CHEROKEE_URL"
-
-  tar   xvzf cherokee-${VERSION}.tar.gz
-  cd    cherokee-${VERSION}
-
-  CC="$translator" ./configure --prefix="$(pwd)/install_tree"
-  make --keep-going
-  make install
-
-) 2>&1 | while read; do log "[cherokee] ${REPLY}"; done
-[ ${PIPESTATUS[0]} -ne 0 ] && fail "[Error] Failed in compilation of Cherokee" || true
-}
-#-------------------------------------------------------------------------------
-# END - compile_cherokee
-#-------------------------------------------------------------------------------
-
-
-#-------------------------------------------------------------------------------
 # BEGIN - compile
 #-------------------------------------------------------------------------------
 compile()
-{(
+{
 
     #---------------------------------------------------------------------------
     # Usage
@@ -162,10 +141,17 @@ compile()
         fail "Usage: compile <application_name>"
     fi
 
-    compile_${application} "$*"
 
-) 2>&1 | while read; do log "[compile] ${REPLY}"; done
-[ ${PIPESTATUS[0]} -ne 0 ] && fail "[Error] Failed during Compile execution" || true
+    if "$VERBOSE"; then
+      (
+
+        compile_${application} "$translator" $*
+
+      ) 2>&1 | while read; do log "[compile:${application}] ${REPLY}"; done
+      [ ${PIPESTATUS[0]} -ne 0 ] && fail "Failed during Compilation of ${application}" || true
+    else
+        compile_${application} "$translator" $*
+    fi
 }
 #-------------------------------------------------------------------------------
 # END - compile
@@ -176,7 +162,7 @@ compile()
 # Main
 #-------------------------------------------------------------------------------
 main()
-{(
+{
 
     # Build in a separate workspace, so we don't pollute
     # the user's current directory.
@@ -193,10 +179,6 @@ main()
           fail "Unknown command: '${rose_command}'."
           ;;
       esac
-
-) 2>&1 | while read; do log "[rose] ${REPLY}"; done
-[ ${PIPESTATUS[0]} -ne 0 ] && fail "[Error] Failed in main operation" || true
 }
 
-echo "--> $rose_command"
-time main
+time main || exit 1

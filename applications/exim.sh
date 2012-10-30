@@ -1,6 +1,6 @@
 compile_exim()
-{(
-  local translator="$1"
+{
+  local translator="$1" parallelism="${parallelism:=1}"
 
   if [ -z "$translator" ]; then
     echo "Usage: compile_exim <name of rose translator>"
@@ -20,11 +20,16 @@ compile_exim()
   create_workspace "exim"
   cd "exim"
 
-  test -e "${TARBALL}" || wget --no-check-certificate  "$DOWNLOAD_URL"
-
+  #-----------------------------------------------------------------------------
+  # Download and Unpack
+  #-----------------------------------------------------------------------------
+  download "$DOWNLOAD_URL"
   tar xzvf "${TARBALL}"
   cd  "exim-${VERSION}"
 
+  #-----------------------------------------------------------------------------
+  # Configure
+  #-----------------------------------------------------------------------------
   cp src/EDITME Local/Makefile
   (
       echo "CC=$translator"
@@ -42,7 +47,9 @@ compile_exim()
   cp src/pcre/config.h src/pcre/config.h-old
   cp src/pcre/config.h-new src/pcre/config.h
 
-
+  #-----------------------------------------------------------------------------
+  # Hack
+  #-----------------------------------------------------------------------------
   # Hack: Replace #include "cnumber.h" with the actual number contained in
   # that header file:
   #
@@ -59,9 +66,8 @@ compile_exim()
     cat "${f}-old" | sed 's/#include "cnumber\.h"/'${cnumber}'/g' > "$f" 
   done
 
-
-  make --keep-going || exit 1
-
-) 2>&1 | while read; do log "[exim] ${REPLY}"; done
-[ ${PIPESTATUS[0]} -ne 0 ] && fail "[Error] Failed in compilation of Exim" || true
+  #-----------------------------------------------------------------------------
+  # Build
+  #-----------------------------------------------------------------------------
+  make --keep-going -j${parallelism} || exit 1
 }
