@@ -67,6 +67,16 @@ do
   shift
   case "$token" in
 
+    --parallelism)
+        if test -n "${1:-}"; then
+            export parallelism="$1"
+            shift
+        else
+            usage
+            fail "--parallelism must be followed by the number of parallel threads you want."
+        fi
+        ;;
+
     --trace)
         set -o xtrace
         ;;
