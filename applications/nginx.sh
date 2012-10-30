@@ -25,7 +25,7 @@ compile_nginx()
   #-----------------------------------------------------------------------------
   download "$DOWNLOAD_URL"
   tar xvf "${TARBALL}" || exit 1
-  cd nginx-${VERSION} || exit 1
+  cd "nginx-${VERSION}" || exit 1
 
   #-----------------------------------------------------------------------------
   # Hack

@@ -27,7 +27,7 @@ compile_grep()
   download "$DOWNLOAD_URL"
   unxz --force "${TARBALL}" || exit 1 # TODO: optional force
   tar xvf "${TARBALL%%.xz}" || exit 1
-  cd grep-${VERSION} || exit 1
+  cd "grep-${VERSION}" || exit 1
 
   #-----------------------------------------------------------------------------
   # Build

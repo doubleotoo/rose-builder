@@ -32,7 +32,10 @@ compile_dbus()
   #-----------------------------------------------------------------------------
   download "$DOWNLOAD_URL"
   tar xvf "${TARBALL}" || exit 1
-  cd dbus-${VERSION} || exit 1
+  cd "dbus-${VERSION}" || exit 1
+
+  mkdir dbus-build-dir || exit 1
+  cd dbus-build-dir || exit 1
 
   #-----------------------------------------------------------------------------
   # Build

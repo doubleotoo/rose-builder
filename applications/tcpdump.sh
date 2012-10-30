@@ -40,7 +40,7 @@ compile_tcpdump()
   #-----------------------------------------------------------------------------
   download "$DOWNLOAD_URL"
   tar xvf "${TARBALL}" || exit 1
-  cd tcpdump-${VERSION} || exit 1
+  cd "tcpdump-${VERSION}" || exit 1
 
   #-----------------------------------------------------------------------------
   # Build
