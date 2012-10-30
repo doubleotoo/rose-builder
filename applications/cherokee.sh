@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-source "$(dirname "$0")/utilities.sh"
-
-export APPSDIR="$(dirname "$0")/applications"
+PS4="+ \${BASH_SOURCE##\${rvm_path:-}} : \${FUNCNAME[0]:+\${FUNCNAME[0]}()}  \${LINENO} > "
+export PS4
+set -o errtrace
+set -o errexit
 
 #-------------------------------------------------------------------------------
 # CLI
@@ -12,7 +13,7 @@ usage()
   printf "%b" "
 Usage
 
-  $0 [options] [action]
+  rose [options] [action]
 
 Options
 
@@ -24,10 +25,9 @@ Options
 Actions
 
   help      - Display CLI help (this output)
-  compile   - Build an application with your ROSE translator:
+  compile   - Build application:
 
-$(ls ${APPSDIR} | sed 's/\.sh//g' |
-  while read; do echo "              $REPLY"; done)
+  $(ls "$(dirname "$0")/applications" | sed 's/\.sh//g' | while read; do echo "\t\t$REPLY"; done)
 
 "
 }
