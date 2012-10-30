@@ -38,7 +38,7 @@ compile_exim()
       echo "BIN_DIRECTORY=$(pwd)/install_tree/bin"
       echo "CONFIGURE_FILE=$(pwd)/install_tree/configure"
   ) 2>&1 >> Local/Makefile
-  [ ${PIPESTATUS[0]} -ne 0 ] && exit 1
+  [ ${PIPESTATUS[0]} -ne 0 ] && exit 1 || true
 
   # Create eximon configuration
   cp exim_monitor/EDITME Local/eximon.conf
@@ -63,7 +63,7 @@ compile_exim()
   for f in $files; do
     echo "Hacking file '$f' to replace '#include \"cnumber.h\"' with the actual contents '${cnumber}'..."
     mv $f $f-old
-    cat "${f}-old" | sed 's/#include "cnumber\.h"/'${cnumber}'/g' > "$f" 
+    cat "${f}-old" | sed 's/#include "cnumber\.h"/'${cnumber}'/g' > "$f"
   done
 
   #-----------------------------------------------------------------------------
