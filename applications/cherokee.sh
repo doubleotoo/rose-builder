@@ -18,14 +18,14 @@ compile_cherokee()
   # Create Workspace
   #-----------------------------------------------------------------------------
   create_workspace "cherokee"
-  cd "cherokee"
+  cd "cherokee" || exit 1
 
   #-----------------------------------------------------------------------------
   # Download and Unpack
   #-----------------------------------------------------------------------------
   download "$CHEROKEE_URL"
   tar   xvzf cherokee-${VERSION}.tar.gz || exit 1
-  cd    cherokee-${VERSION}
+  cd    cherokee-${VERSION} || exit 1
 
   #-----------------------------------------------------------------------------
   # Build

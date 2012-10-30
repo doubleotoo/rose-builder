@@ -1,51 +1,46 @@
-compile_nginx()
+compile_wget()
 {
   local translator="$1" parallelism="${parallelism:=1}"
 
   if [ -z "$translator" ]; then
-    echo "Usage: compile_nginx <name of rose translator>"
+    echo "Usage: compile_wget <name of rose translator>"
     exit 1
   fi
 
   #-----------------------------------------------------------------------------
   # Configure  Meta Information
   #-----------------------------------------------------------------------------
-  declare -r VERSION=1.2.3
-  declare -r TARBALL="nginx-${VERSION}.tar.gz"
-  declare -r DOWNLOAD_URL="http://nginx.org/download/${TARBALL}"
+  declare -r VERSION=1.14
+  declare -r TARBALL="wget-${VERSION}.tar.gz"
+  declare -r DOWNLOAD_URL="http://ftp.gnu.org/gnu/wget/${TARBALL}"
 
   #-----------------------------------------------------------------------------
   # Create Workspace
   #-----------------------------------------------------------------------------
-  create_workspace "nginx"
-  cd "nginx" || exit 1
+  create_workspace "wget"
+  cd "wget" || exit 1
 
   #-----------------------------------------------------------------------------
   # Download and Unpack
   #-----------------------------------------------------------------------------
   download "$DOWNLOAD_URL"
   tar xvf "${TARBALL}" || exit 1
-  cd nginx-${VERSION} || exit 1
+  cd wget-${VERSION} || exit 1
 
   #-----------------------------------------------------------------------------
   # Hack
   #-----------------------------------------------------------------------------
-  # Hack: Replace space in header file include paths: "-I "to> "-I":
-  files="$(grep -rn "\-I " * | awk '{print $1}' | sed 's/:.*:.*//g')"
-  for f in $files; do
-    echo "Hacking file '$f' to remove space in -I header file include paths..."
-    mv $f $f-old
-    cat "${f}-old" | sed 's/-I /-I/g' > "$f" 
-  done
+  # Hack: Replace "GNUTLS_TLS1_2" by "GNUTLS_TLS1_1" so it will compile
+  # on our operating systems
+  f="src/gnutls.c"
+  echo "Hacking file '$f' to change 'GNUTLS_TLS1_2' to 'GNUTLS_TLS1_1'..."
+  mv $f $f-old
+  cat "${f}-old" | sed 's/GNUTLS_TLS1_2/GNUTLS_TLS1_1/g' > "$f" 
 
-  # Hack: Remove "-Werror" so warnings won't be treated as errors:
-  files="$(grep -rn "\-Werror" * | awk '{print $1}' | sed 's/:.*:.*//g')"
-  for f in $files; do
-    echo "Hacking file '$f' to remove the -Werror CFLAG..."
-    mv $f $f-old
-    cat "${f}-old" | sed 's/-Werror//g' > "$f" 
-  done
-
+  # Hack: Change include to be local instead of system:
+  # <sys/stat.h> to "sys/stat.h"
+  cp lib/utimens.c lib/utimens.c-old
+  cat lib/utimens.c-old | sed 's/#include <sys\/stat.h>/#include "sys\/stat.h"/g' > lib/utimens.c
 
   #-----------------------------------------------------------------------------
   # Build
