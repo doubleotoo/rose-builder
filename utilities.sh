@@ -20,9 +20,15 @@ create_workspace()
     #---------------------------------------------------------------------------
     # Usage
     #---------------------------------------------------------------------------
-    local workspace="$1"
+    local workspace="$1" clean="$2"
+    : ${clean:=${CLEAN}}
     if test -z "$workspace"; then
         fail "Usage: create_workspace <path>"
+    fi
+
+    if "$clean"; then
+      log "[CLEAN] Removing Workspace before re-creating it"
+      rm -rf "${workspace}"
     fi
 
     #---------------------------------------------------------------------------

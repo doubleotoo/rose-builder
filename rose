@@ -22,6 +22,7 @@ done
 : ${translator:=identityTranslator}
 : ${parallelism:=1}
 : ${VERBOSE:=false}
+: ${CLEAN:=false}
 
 
 #-------------------------------------------------------------------------------
@@ -45,6 +46,7 @@ $(for app in $APPLICATION_NAMES; do \
   help                    Display CLI help (this output)
 
 Options
+  --clean                 Clean workspace before build.
   --parallelism #         make -j#; default: '${parallelism}'
   --translator <name>     Name of your ROSE translator; default: '${translator}'
                           (Note: Your build environment must be pre-configured,
@@ -70,6 +72,10 @@ do
   token="$1"
   shift
   case "$token" in
+
+    --clean)
+        export CLEAN=true
+        ;;
 
     --parallelism)
         if test -n "${1:-}"; then
@@ -179,7 +185,7 @@ main()
 
     # Build in a separate workspace, so we don't pollute
     # the user's current directory.
-    create_workspace "${rose_workspace:=$(pwd)/rose_workspace}"
+    create_workspace "${rose_workspace:=$(pwd)/rose_workspace}" false
     cd "$rose_workspace"
 
     case "$rose_command" in
