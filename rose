@@ -8,9 +8,10 @@ source "$(dirname "$0")/utilities.sh"
 # Source application build functions
 #-------------------------------------------------------------------------------
 export APPLICATIONS_DIR="$(dirname "$0")/applications"
-export APPLICATIONS=$(ls "$APPLICATIONS_DIR")
+export APPLICATION_SCRIPTS=$(ls "$APPLICATIONS_DIR")
+export APPLICATION_NAMES=$(ls "$APPLICATIONS_DIR" | sed 's/\.sh//g')
 
-for app in $APPLICATIONS; do
+for app in $APPLICATION_SCRIPTS; do
   source "${APPLICATIONS_DIR}/${app}"
 done
 
@@ -34,10 +35,12 @@ Usage
   $0 [options] [action]
 
 Actions
-  compile <application>   Build an application with your ROSE translator:
+  compile <application>   Build an <application> with your ROSE translator:
 
-$(ls ${APPLICATIONS_DIR} | sed 's/\.sh//g' | while read; do echo "\
-                          $REPLY"; done)
+$(for app in $APPLICATION_NAMES; do \
+      echo "\
+                          $app";\
+  done)
 
   help                    Display CLI help (this output)
 
@@ -123,7 +126,7 @@ do
               shift
           else
               usage
-              fail "compile command must be followed by an application name."
+              fail "compile command must be followed by an <application> name"
           fi
           ;;
     *)
@@ -135,7 +138,7 @@ done
 
 if [ -z "$rose_command" ]; then
     usage
-    fail "Please specify a command to run"
+    fail "Please specify an action (command) to perform"
 fi
 
 
