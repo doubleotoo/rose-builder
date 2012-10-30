@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-# TODO: add --force to override existant workspace
-
 source "$(dirname "$0")/utilities.sh"
 
 
@@ -17,6 +15,9 @@ for app in $APPLICATIONS; do
 done
 
 
+#-------------------------------------------------------------------------------
+# Set defaults
+#-------------------------------------------------------------------------------
 : ${translator:=identityTranslator}
 : ${parallelism:=1}
 : ${VERBOSE:=false}
@@ -24,13 +25,13 @@ done
 
 #-------------------------------------------------------------------------------
 # CLI
+# TODO: add --force to override existant workspace
 #-------------------------------------------------------------------------------
 usage()
 {
   printf "%b" "
 Usage
   $0 [options] [action]
-
 
 Actions
   compile <application>   Build an application with your ROSE translator:
@@ -42,7 +43,7 @@ $(ls ${APPLICATIONS_DIR} | sed 's/\.sh//g' | while read; do echo "\
 
 Options
   --parallelism #         make -j#; default: '${parallelism}'
-  --translator <path>     Name of your ROSE translator; default: '${translator}'
+  --translator <name>     Name of your ROSE translator; default: '${translator}'
                           (Note: Your build environment must be pre-configured,
                           i.e. \$PATH and \$LD_LIBRARY_PATH)
   --workspace <path>      Workspace path to perform all builds
@@ -50,7 +51,7 @@ Options
 
   Debugging:
   --trace                 Enables debugging for the script
-  --verbose               Enables debugging tracing
+  --verbose               Enables debugging for the functional operations
 
 "
 }
@@ -112,7 +113,7 @@ do
 
     -*)
         usage
-        exit 1
+        fail "Unknown command line option switch: '$token'"
         ;;
 
     compile)
@@ -134,7 +135,7 @@ done
 
 if [ -z "$rose_command" ]; then
     usage
-    exit 1
+    fail "Please specify a command to run"
 fi
 
 
@@ -190,4 +191,4 @@ main()
       esac
 }
 
-time main || exit 1
+time main || fail "Main program execution failed"
