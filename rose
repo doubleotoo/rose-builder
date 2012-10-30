@@ -9,10 +9,11 @@ source "$(dirname "$0")/utilities.sh"
 #-------------------------------------------------------------------------------
 # Source application build functions
 #-------------------------------------------------------------------------------
-export APPSDIR="$(dirname "$0")/applications"
+export APPLICATIONS_DIR="$(dirname "$0")/applications"
+export APPLICATIONS=$(ls "$APPLICATIONS_DIR")
 
-for app in $(ls "$APPSDIR"); do
-  source "${APPSDIR}/${app}"
+for app in $APPLICATIONS; do
+  source "${APPLICATIONS_DIR}/${app}"
 done
 
 
@@ -34,7 +35,7 @@ Usage
 Actions
   compile <application>   Build an application with your ROSE translator:
 
-$(ls ${APPSDIR} | sed 's/\.sh//g' | while read; do echo "\
+$(ls ${APPLICATIONS_DIR} | sed 's/\.sh//g' | while read; do echo "\
                           $REPLY"; done)
 
   help                    Display CLI help (this output)
