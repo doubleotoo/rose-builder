@@ -1,17 +1,11 @@
-#!/usr/bin/env bash
-
-source "$(dirname "$0")/utilities.sh"
-
-
-if [ $# -ne 1 ]; then
-  echo "Usage: $(basename "$0") <name of rose translator>"
-  exit 1
-fi
-
-
 compile_exim()
 {(
   local translator="$1"
+
+  if [ -z "$translator" ]; then
+    echo "Usage: compile_exim <name of rose translator>"
+    exit 1
+  fi
 
   #-----------------------------------------------------------------------------
   # Configure  Meta Information
@@ -71,5 +65,3 @@ compile_exim()
 ) 2>&1 | while read; do log "[exim] ${REPLY}"; done
 [ ${PIPESTATUS[0]} -ne 0 ] && fail "[Error] Failed in compilation of Exim" || true
 }
-
-compile_exim "$1"

@@ -2,7 +2,15 @@
 
 source "$(dirname "$0")/utilities.sh"
 
+
+#-------------------------------------------------------------------------------
+# Source application build functions
+#-------------------------------------------------------------------------------
 export APPSDIR="$(dirname "$0")/applications"
+source "${APPSDIR}/exim"
+
+
+: ${translator:=identityTranslator}
 
 #-------------------------------------------------------------------------------
 # CLI
@@ -14,20 +22,25 @@ Usage
 
   $0 [options] [action]
 
-Options
-
-  --trace                 enables debugging for the script
-  --workspace <path>      workspace path to perform all builds
-  --translator <path>     name of your ROSE translator
-                          (Note: Your build environment must be setup)
 
 Actions
 
-  help      - Display CLI help (this output)
-  compile   - Build an application with your ROSE translator:
+  compile                 Build an application with your ROSE translator:
+  help                    Display CLI help (this output)
 
-$(ls ${APPSDIR} | sed 's/\.sh//g' |
-  while read; do echo "              $REPLY"; done)
+$(ls ${APPSDIR} | sed 's/\.sh//g' | while read; do echo "\
+                          $REPLY"; done)
+
+Options
+
+  --translator <path>     Name of your ROSE translator; default: '${translator}'
+                          (Note: Your build environment must be pre-configured,
+                          i.e. \$PATH and \$LD_LIBRARY_PATH)
+  --workspace <path>      Workspace path to perform all builds
+
+
+  Debugging:
+  --trace                 Enables debugging for the script
 
 "
 }
@@ -165,6 +178,8 @@ compile()
 main()
 {(
 
+    # Build in a separate workspace, so we don't pollute
+    # the user's current directory.
     create_workspace "${rose_workspace:=$(pwd)/rose_workspace}"
     cd "$rose_workspace"
 
