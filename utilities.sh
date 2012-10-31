@@ -67,6 +67,7 @@ download()
     # Mirrors
     #---------------------------------------------------------------------------
     declare -r mirrors="
+http://hudson-rose-30:8080/userContent/downloads
 http://rosecompiler.org/tarballs
 https://github.com/downloads/rose-compiler/rose"
 
@@ -79,10 +80,10 @@ https://github.com/downloads/rose-compiler/rose"
         log "[SKIP] File already exists: '${filename}'"
     else
         log "Downloading '${filename}'"
-        if test -z "$direct_url" || ! $(set -x; $downloader "$direct_url"); then
+        if test -z "$direct_url" || ! $(set -x; $downloader "$direct_url" && test -e "$filename"); then
           for mirror in $mirrors; do
             log "Trying mirror: '$mirror'"
-            if $(set -x; $downloader "${mirror}/${filename}"); then
+            if $(set -x; $downloader "${mirror}/${filename}" && test -e "$filename"); then
               exit 0
             fi
           done
