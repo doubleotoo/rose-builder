@@ -37,7 +37,7 @@ exit 1
   #-----------------------------------------------------------------------------
   # Download and Unpack
   #-----------------------------------------------------------------------------
-  download "$DOWNLOAD_URL"
+  download "${TARBALL}" "$DOWNLOAD_URL"
   tar xvf "${TARBALL}" || exit 1
   cd "epiphany-${VERSION}" || exit 1
 

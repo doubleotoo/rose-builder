@@ -28,7 +28,7 @@ compile_tcpdump()
   # Pre-requisite
   #-----------------------------------------------------------------------------
   # libpcap
-  download "$LIBPCAP_DOWNLOAD_URL"
+  download "$LIBPCAP_TARBALL" "$LIBPCAP_DOWNLOAD_URL"
   tar xvf "${LIBPCAP_TARBALL}" || exit 1
   pushd "libpcap-${LIBPCAP_VERSION}"
       ./configure --prefix="$(pwd)/install_tree" || exit 1
@@ -38,7 +38,7 @@ compile_tcpdump()
   #-----------------------------------------------------------------------------
   # Download and Unpack
   #-----------------------------------------------------------------------------
-  download "$DOWNLOAD_URL"
+  download "$TARBALL" "$DOWNLOAD_URL"
   tar xvf "${TARBALL}" || exit 1
   cd "tcpdump-${VERSION}" || exit 1
 

@@ -18,7 +18,7 @@ compile_postfix()
   #-----------------------------------------------------------------------------
   # Download and Unpack
   #-----------------------------------------------------------------------------
-  download "$DOWNLOAD_URL"
+  download "$TARBALL" "$DOWNLOAD_URL"
   tar xvf "${TARBALL}" || exit 1
   cd "postfix-${VERSION}" || exit 1
 

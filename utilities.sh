@@ -55,22 +55,39 @@ download()
     #---------------------------------------------------------------------------
     # Usage
     #---------------------------------------------------------------------------
-    local url="$1" filename="$2"
-    if test -z "$url"; then
-        fail "Usage: download <url> [filename]"
+    local filename="$1" direct_url="$2"
+    if test -z "$filename"; then
+        fail "Usage: download <filename> [direct-url]"
     fi
     if test -z "$filename"; then
         filename="$(basename "$url")"
     fi
 
     #---------------------------------------------------------------------------
-    # Download URL
+    # Mirrors
+    #---------------------------------------------------------------------------
+    declare -r mirrors="
+http://rosecompiler.org/tarballs
+https://github.com/downloads/rose-compiler/rose"
+
+    declare -r downloader="wget --no-check-certificate"
+
+    #---------------------------------------------------------------------------
+    # Download filename from direct-URL or mirror site
     #---------------------------------------------------------------------------
     if test -e "$filename"; then
         log "[SKIP] File already exists: '${filename}'"
     else
         log "Downloading '${filename}'"
-        wget --no-check-certificate  "$url" || exit 1
+        if test -z "$direct_url" || ! $(set -x; $downloader "$direct_url"); then
+          for mirror in $mirrors; do
+            log "Trying mirror: '$mirror'"
+            if $(set -x; $downloader "${mirror}/${filename}"); then
+              exit 0
+            fi
+          done
+          false
+        fi
     fi
 
 ) 2>&1 | while read; do log "[download] ${REPLY}"; done

@@ -12,7 +12,7 @@ compile_cherokee()
   #-----------------------------------------------------------------------------
   declare -r VERSION=1.2.101
   declare -r TARBALL="cherokee-${VERSION}.tar.gz"
-  declare -r CHEROKEE_URL="http://www.cherokee-project.com/download/1.2/${VERSION}/${TARBALL}"
+  declare -r DOWNLOAD_URL="http://www.cherokee-project.com/download/1.2/${VERSION}/${TARBALL}"
 
   #-----------------------------------------------------------------------------
   # Create Workspace
@@ -23,7 +23,7 @@ compile_cherokee()
   #-----------------------------------------------------------------------------
   # Download and Unpack
   #-----------------------------------------------------------------------------
-  download "$CHEROKEE_URL"
+  download "${TARBALL}" "$DOWNLOAD_URL"
   tar xvzf "${TARBALL}" || exit 1
   cd  "cherokee-${VERSION}" || exit 1
 

@@ -30,7 +30,7 @@ compile_dbus()
   #-----------------------------------------------------------------------------
   # Download and Unpack
   #-----------------------------------------------------------------------------
-  download "$DOWNLOAD_URL"
+  download "${TARBALL}" "$DOWNLOAD_URL"
   tar xvf "${TARBALL}" || exit 1
   cd "dbus-${VERSION}" || exit 1
 
