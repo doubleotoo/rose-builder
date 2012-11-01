@@ -5,7 +5,7 @@ compile_sudo()
   #-----------------------------------------------------------------------------
   # Configure  Meta Information
   #-----------------------------------------------------------------------------
-  declare -r VERSION=1.8.6p3
+  declare -r VERSION=1.8.6
   declare -r TARBALL="sudo-${VERSION}.tar.gz"
   declare -r DOWNLOAD_URL="ftp://ftp.sudo.ws/pub/sudo/${TARBALL}"
 
