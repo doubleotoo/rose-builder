@@ -1,6 +1,8 @@
 compile_exim()
 {
-  local translator="$1" parallelism="${parallelism:=1}"
+  # TOO1 (11/01/2012): Fails with parallelism
+  #local translator="$1" parallelism="${parallelism:=1}"
+  local translator="$1" parallelism="1"
 
   if [ -z "$translator" ]; then
     echo "Usage: compile_exim <name of rose translator>"
