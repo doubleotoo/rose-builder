@@ -25,7 +25,7 @@ compile_openssl()
   #-----------------------------------------------------------------------------
   # Build
   #-----------------------------------------------------------------------------
-  CC="$translator" ./configure --prefix="$(pwd)/install_tree" || exit 1
+  CC="$translator" ./config --prefix="$(pwd)/install_tree" || exit 1
 
   make --keep-going -j${parallelism} || exit 1
   #make test --keep-going -j${parallelism} || exit 1
