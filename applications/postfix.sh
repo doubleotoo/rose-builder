@@ -42,5 +42,5 @@ compile_postfix()
   make makefiles CC="$translator" || exit 1
 
   make --keep-going -j${parallelism} || exit 1
-  make install -j${parallelism} || exit 1
+  #make install -j${parallelism} || exit 1
 }
