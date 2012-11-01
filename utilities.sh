@@ -71,7 +71,7 @@ http://hudson-rose-30:8080/userContent/downloads
 http://rosecompiler.org/tarballs
 https://github.com/downloads/rose-compiler/rose"
 
-    declare -r downloader="wget --no-check-certificate"
+    declare -r downloader="wget --no-check-certificate --timeout=20 --tries=2"
 
     #---------------------------------------------------------------------------
     # Download filename from direct-URL or mirror site
@@ -87,6 +87,7 @@ https://github.com/downloads/rose-compiler/rose"
               exit 0
             fi
           done
+          log "Unable to download '${filename}' from any sources"
           false
         fi
     fi
