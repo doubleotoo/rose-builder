@@ -125,16 +125,17 @@ do
         fail "Unknown command line option switch: '$token'"
         ;;
 
-    compile)
+    compile|clean)
         export rose_command="$token"
           if test -n "${1:-}"; then
               export rose_command_args="$1"
               shift
           else
               usage
-              fail "compile command must be followed by an <application> name"
+              fail "'${rose_command}' command must be followed by an <application> name"
           fi
           ;;
+
     *)
         export rose_command_args="$rose_command_args $token"
         ;;
@@ -192,6 +193,22 @@ main()
 
       compile)
           compile "$rose_command_args"
+          ;;
+
+      clean)
+          application="$rose_command_args"
+          (
+
+            log "Cleaning '${application}'..."
+            if test -d "$application"; then
+              rm -rf "$application"
+              log "Removed '${application}.'"
+            else
+              log "[SKIP] '${application}' does not exist."
+            fi
+
+          ) 2>&1 | while read; do log "[clean:${application}] ${REPLY}"; done
+          [ ${PIPESTATUS[0]} -ne 0 ] && fail "Failed during Clean of ${application}" || true
           ;;
 
       *)
