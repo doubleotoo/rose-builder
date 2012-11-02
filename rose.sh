@@ -173,7 +173,7 @@ compile()
       ) 2>&1 | while read; do log "[compile:${application}] ${REPLY}"; done
       [ ${PIPESTATUS[0]} -ne 0 ] && fail "Failed during Compilation of ${application}" || true
     else
-        compile_${application} "$translator" $*
+        compile_${application} "$translator" $* || exit 1
     fi
 }
 
@@ -192,7 +192,7 @@ main()
     case "$rose_command" in
 
       compile)
-          compile "$rose_command_args"
+          compile "$rose_command_args" || exit 1
           ;;
 
       clean)
