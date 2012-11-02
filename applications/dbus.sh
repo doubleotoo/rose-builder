@@ -43,5 +43,5 @@ compile_dbus()
   CC="$translator" cmake -G "Unix Makefiles" ../cmake/ || exit 1
 
   make --keep-going -j${parallelism} || exit 1
-  make install -j${parallelism} || exit 1
+  #make install -j${parallelism} || exit 1
 }
