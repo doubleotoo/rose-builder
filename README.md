@@ -1,7 +1,7 @@
 rose-builder
 ============
 
-The main `rose` script is a convenience tool to:
+The main `rose.sh` script is a convenience tool to:
 
 * Compile applications with ROSE.
 * Manage your application workspaces
