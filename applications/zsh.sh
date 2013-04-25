@@ -18,9 +18,11 @@ compile_zsh()
   #-----------------------------------------------------------------------------
   # Download and Unpack
   #-----------------------------------------------------------------------------
-  download "$TARBALL" "$DOWNLOAD_URL"
-  tar xvf "${TARBALL}" || exit 1
-  cd "zsh-${VERSION}" || exit 1
+  #download "$TARBALL" "$DOWNLOAD_URL"
+  #tar xvf "${TARBALL}" || exit 1
+  #cd "zsh-${VERSION}" || exit 1
+  git clone rose-dev@rosecompiler.llnl.gov:rose/c/zsh || exit 1
+  cd zsh
 
   #-----------------------------------------------------------------------------
   # Hack
@@ -32,13 +34,15 @@ compile_zsh()
   #       zle_bindings-modified_for_rose.c \
   #   > patch-zle_bindings.c
   #
-  curl --insecure \
-    https://raw.github.com/gist/4020001/6505ec18af01163789bc8d038890a5f3d8b0267e/patch-zle_bindings.c | \
-    patch -p1 -i -
+  #curl --insecure \
+  #  https://raw.github.com/gist/4020001/6505ec18af01163789bc8d038890a5f3d8b0267e/patch-zle_bindings.c | \
+  #  patch -p1 -i -
+  cat patch-zle_bindings.c | patch -p1 -i -
 
   #-----------------------------------------------------------------------------
   # Build
   #-----------------------------------------------------------------------------
+  ./Util/preconfig
   # Use "--without-tcsetpgrp", otherwise error "no controlling TTY" when run in Jenkins
   CC="$translator" ./configure \
       --prefix="$(pwd)/install_tree" \
