@@ -42,7 +42,7 @@ compile_zsh()
   #-----------------------------------------------------------------------------
   # Build
   #-----------------------------------------------------------------------------
-  ./Util/preconfig
+  #./Util/preconfig # Generate configure script (Requires Autoconf 2.59+)
   # Use "--without-tcsetpgrp", otherwise error "no controlling TTY" when run in Jenkins
   CC="$translator" ./configure \
       --prefix="$(pwd)/install_tree" \
