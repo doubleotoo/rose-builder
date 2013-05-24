@@ -45,7 +45,7 @@ compile_wget()
   #-----------------------------------------------------------------------------
   # Build
   #-----------------------------------------------------------------------------
-  CC="$translator" ./configure --prefix="$(pwd)/install_tree" || exit 1
+  CC="$translator -rose:C89_only" ./configure --prefix="$(pwd)/install_tree" || exit 1
 
   make --keep-going -j${parallelism} || exit 1
   make install -j${parallelism} || exit 1
