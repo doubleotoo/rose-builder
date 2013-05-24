@@ -21,7 +21,7 @@ compile_zsh()
   #download "$TARBALL" "$DOWNLOAD_URL"
   #tar xvf "${TARBALL}" || exit 1
   #cd "zsh-${VERSION}" || exit 1
-  git clone rose-dev@rosecompiler.llnl.gov:rose/c/zsh || exit 1
+  git clone rose-dev@rosecompiler1.llnl.gov:rose/c/zsh || exit 1
   cd zsh
 
   #-----------------------------------------------------------------------------
