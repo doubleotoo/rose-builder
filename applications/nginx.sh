@@ -31,21 +31,23 @@ patch_nginx()
   #-----------------------------------------------------------------------------
   info "[Patch] Replace space in header file include paths: \"-I \" to \"-I\""
 
-  files="$(grep -rn "\-I " * | awk '{print $1}' | sed 's/:.*:.*//g')"
-  for f in $files; do
-    echo "Hacking file '$f' to remove space in -I header file include paths..."
-    mv $f $f-old
-    cat "${f}-old" | sed 's/-I /-I/g' > "$f" 
-  done
+  set -x
+      files="$(grep -rn "\-I " * | awk '{print $1}' | sed 's/:.*:.*//g')"
+      for f in $files; do
+        echo "Hacking file '$f' to remove space in -I header file include paths..."
+        mv $f $f-old
+        cat "${f}-old" | sed 's/-I /-I/g' > "$f" 
+      done
 
-  info "[Patch] Remove \"-Werror\" so warnings won't be treated as errors"
+      info "[Patch] Remove \"-Werror\" so warnings won't be treated as errors"
 
-  files="$(grep -rn "\-Werror" * | awk '{print $1}' | sed 's/:.*:.*//g')"
-  for f in $files; do
-    echo "Hacking file '$f' to remove the -Werror CFLAG..."
-    mv $f $f-old
-    cat "${f}-old" | sed 's/-Werror//g' > "$f" 
-  done
+      files="$(grep -rn "\-Werror" * | awk '{print $1}' | sed 's/:.*:.*//g')"
+      for f in $files; do
+        echo "Hacking file '$f' to remove the -Werror CFLAG..."
+        mv $f $f-old
+        cat "${f}-old" | sed 's/-Werror//g' > "$f" 
+      done
+  set +x
 }
 
 #-------------------------------------------------------------------------------
