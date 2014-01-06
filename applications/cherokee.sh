@@ -24,10 +24,10 @@ patch_cherokee__rose()
 configure_cherokee__rose()
 #-------------------------------------------------------------------------------
 {
-  info "Configuring application for ROSE compiler='${rose_compiler}'"
+  info "Configuring application for ROSE compiler='${CC}'"
 
   set -x
-      CC="${rose_compiler} -rose:C99" \
+      CC="${CC} -rose:C99" \
           ./configure --prefix="$(pwd)/install_tree" || exit 1
   set +x
 }

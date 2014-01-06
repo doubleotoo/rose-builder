@@ -40,12 +40,12 @@ configure_dbus__generic()
 configure_dbus__rose()
 #-------------------------------------------------------------------------------
 {
-  info "Configuring application for ROSE compiler='${rose_compiler}'"
+  info "Configuring application for ROSE compiler='${CC}'"
 
   configure_dbus__generic || exit 1
 
   set -x
-      CC="$rose_compiler" cmake -G "Unix Makefiles" ../cmake/ || exit 1
+      CC="$CC" cmake -G "Unix Makefiles" ../cmake/ || exit 1
   set +x
 }
 

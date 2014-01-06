@@ -4,7 +4,7 @@ set -e
 #-------------------------------------------------------------------------------
 # Set defaults
 #-------------------------------------------------------------------------------
-: ${rose_compiler:="identityTranslator"}
+: ${CC:="identityTranslator"}
 : ${workspace:="$(pwd)/workspace"}
 : ${parallelism:=1}
 : ${application:=$1}
