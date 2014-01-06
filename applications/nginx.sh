@@ -14,15 +14,23 @@ download_nginx()
 }
 
 #-------------------------------------------------------------------------------
-patch_nginx__rose()
+install_deps_nginx()
 #-------------------------------------------------------------------------------
 {
-  info "ROSE patching not required"
+  info "[Dependencies] No external dependencies need to be installed"
+}
+
+#-------------------------------------------------------------------------------
+patch_nginx()
+#-------------------------------------------------------------------------------
+{
+  info "Performing patching step"
 
   #-----------------------------------------------------------------------------
   # Hack
   #-----------------------------------------------------------------------------
-  # Hack: Replace space in header file include paths: "-I "to> "-I":
+  info "[Patch] Replace space in header file include paths: \"-I \" to \"-I\""
+
   files="$(grep -rn "\-I " * | awk '{print $1}' | sed 's/:.*:.*//g')"
   for f in $files; do
     echo "Hacking file '$f' to remove space in -I header file include paths..."
@@ -30,7 +38,8 @@ patch_nginx__rose()
     cat "${f}-old" | sed 's/-I /-I/g' > "$f" 
   done
 
-  # Hack: Remove "-Werror" so warnings won't be treated as errors:
+  info "[Patch] Remove \"-Werror\" so warnings won't be treated as errors"
+
   files="$(grep -rn "\-Werror" * | awk '{print $1}' | sed 's/:.*:.*//g')"
   for f in $files; do
     echo "Hacking file '$f' to remove the -Werror CFLAG..."

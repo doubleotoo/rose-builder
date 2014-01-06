@@ -40,7 +40,8 @@ phase_1()
   mkdir -p "${application_workspace}/phase_1" || fail "phase_1::create_workspace failed"
   pushd "${application_workspace}/phase_1"    || fail "phase_1::cd_into_workspace failed"
       "download_${application}"               || fail "phase_1::download failed with status='$?'"
-      "patch_${application}__rose"            || fail "phase_1::patch_rose failed with status='$?'"
+      "install_deps_${application}"           || fail "phase_1::install_deps failed with status='$?'"
+      "patch_${application}"                  || fail "phase_1::patch failed with status='$?'"
       "configure_${application}__rose"        || fail "phase_1::configure_with_rose failed with status='$?'"
       "compile_${application}"                || fail "phase_1::compile failed with status='$?'"
   popd
@@ -55,6 +56,8 @@ phase_2()
   mkdir -p "${application_workspace}/phase_2" || fail "phase_2::create_workspace failed"
   pushd "${application_workspace}/phase_2"    || fail "phase_2::cd_into_workspace failed"
       "download_${application}"               || fail "phase_2::download failed with status='$?'"
+      "install_deps_${application}"           || fail "phase_2::install_deps failed with status='$?'"
+      "patch_${application}"                  || fail "phase_2::patch failed with status='$?'"
 
       # Replace application source code files with ROSE translated source code files
       "${ROSE_SH_HOME}/opt/stage_rose.sh" -f \
